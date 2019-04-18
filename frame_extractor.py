@@ -11,14 +11,13 @@ def extractFrames(videoPath):
     """
 
     videoName = os.path.basename(os.path.normpath(videoPath))
-
     outputDir = 'frames_' + videoName
 
     if not os.path.exists(outputDir):
         os.mkdir(outputDir)
 
     cap = cv2.VideoCapture(videoPath)
-
+    print(cap.isOpened())
     while(cap.isOpened()):
         frameExists, frame = cap.read()
         if frameExists:
@@ -30,8 +29,7 @@ def extractFrames(videoPath):
     cap.release()
 
 
-def copyFrame(filename, label, framesDir):
-    outputDir = "frames_%s" % label
+def copyFrame(filename, outputDir, framesDir):
     if not os.path.exists(outputDir):
         os.mkdir(outputDir)
 
@@ -80,7 +78,7 @@ def groupFrames(framesDir, labeledIntervals, copy=False):
                     labeledFrames.append([timestamp, label])
 
                     if copy:
-                        copyFrame(filename, label, framesDir)
+                        copyFrame(filename, framesDir + "_%s" % label, framesDir)
 
                     break
 
@@ -88,15 +86,15 @@ def groupFrames(framesDir, labeledIntervals, copy=False):
             labeledFrames.append([timestamp, "default"])
 
             if copy:
-                copyFrame(filename, "default", framesDir)
+                copyFrame(filename, framesDir + "_default", framesDir)
 
     return labeledFrames
 
 
 #exemple pour labeliser les frames situées dans un dossier session_1,
 #avec les intervalles situés dans labeled_intervals.py:
-#   groupFrames("session_1", labeled_intervals.data, True)
+groupFrames("session_1", labeled_intervals.session_1, True)
 
 #exemple pour extraire les frames d'une video située dans /home/uldrone/video.mp4
-#   extractFrames("/home/uldrone/video.mp4")
+#extractFrames("/home/david/uldrone/output.mp4")
     
